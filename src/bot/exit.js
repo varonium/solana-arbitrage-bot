@@ -33,7 +33,11 @@ const handleExit = () => {
 
 		// write cache to file
 		try {
-			fs.writeFileSync("./temp/cache.json", JSON.stringify(cache, null, 2));
+			// sanitize cache before saving (avoid storing wallet identifiers)
+			const sanitizedCache = { ...cache };
+			delete sanitizedCache.walletpubkeyfull;
+			delete sanitizedCache.walletpubkey;
+			fs.writeFileSync("./temp/cache.json", JSON.stringify(sanitizedCache, null, 2));
 			console.log(
 				chalk.black.bgGreenBright(
 					`		> Cache saved to ${chalk.bold("./temp/cache.json")} `

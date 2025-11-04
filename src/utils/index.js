@@ -171,20 +171,25 @@ const checkForEnvFile = () => {
 	}
 };
 const checkWallet = () => {
-	if (
-		!process.env.SOLANA_WALLET_PRIVATE_KEY ||
-		(process.env.SOLANA_WALLET_PUBLIC_KEY &&
-			process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88)
-	) {
-		displayMessage(`${process.env.SOLANA_WALLET_PUBLIC_KEY} Your wallet is not valid. \n\nCheck the .env file and ensure you have put in the private key in the correct format. \n\ni.e. SOLANA_WALLET_PRIVATE_KEY=3QztVpoRgLNvAmBX9Yo3cjR3bLrXVrJZbPW5BY7GXq8GFvEjR4xEDeVai85a8WtYUCePvMx27eBut5K2kdqN8Hks`);
-		process.exit(1);
-	}
+    if (
+        !process.env.SOLANA_WALLET_PRIVATE_KEY ||
+        (process.env.SOLANA_WALLET_PUBLIC_KEY &&
+            process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88)
+    ) {
+        // Avoid echoing any wallet identifiers
+        displayMessage(`Your wallet config is not valid.\n\nCheck the .env file and ensure the private key is in the correct base58 format.\n\nExample: SOLANA_WALLET_PRIVATE_KEY=BASE58_PRIVATE_KEY_HERE`);
+        process.exit(1);
+    }
 }
 
 const checkArbReady = async () => {
-	try{
-		// Support the community
-		const ARB_TOKEN =  '9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh';
+    // Allow disabling ARB gating via env flag
+    if (process.env.REQUIRE_ARB !== 'true') {
+        return true;
+    }
+    try{
+        // Support the community
+        const ARB_TOKEN =  '9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh';
 
 		var checkBalance = Number(0);
 		const connection = new Connection(process.env.DEFAULT_RPC);
@@ -202,24 +207,24 @@ const checkArbReady = async () => {
 
 		// Do you support the project and the hard work of the developers?
 		var arb_ready = Number(totalTokenBalance);
-		if (arb_ready < 10000000000) {
-			console.clear(); // Clear console before displaying message
-			displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
-			process.exit(1);
-		}
+        if (arb_ready < 10000000000) {
+            console.clear(); // Clear console before displaying message
+            displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.\n\nSet REQUIRE_ARB=false in .env to disable this check.");
+            process.exit(1);
+        }
 
         // Check if there are no ATAs for the specified token
         if (tokenAccounts.value.length === 0) {
             console.clear(); // Clear console before displaying message
-            displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
+            displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.\n\nSet REQUIRE_ARB=false in .env to disable this check.");
             process.exit(1);
         }
-		return true;
-	} catch (err){
-		console.clear(); // Clear console before displaying message
-		displayMessage("You do not seem to be ARB ready!\n\nCheck the .ENV file to see your RPC is set up properly and your wallet is set to the correct private key.");
-		process.exit(1);
-	}
+        return true;
+    } catch (err){
+        console.clear(); // Clear console before displaying message
+        displayMessage("You do not seem to be ARB ready!\n\nCheck the .ENV file to see your RPC is set up properly and your wallet is set to the correct private key.\n\nSet REQUIRE_ARB=false in .env to disable this check.");
+        process.exit(1);
+    }
 };
 
 module.exports = {

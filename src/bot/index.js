@@ -459,17 +459,18 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 
 const run = async () => {
 	try {
-		// Are they ARB ready and part of the community?
-		await checkArbReady();
+    // Are they ARB ready and part of the community? (optional via REQUIRE_ARB)
+    await checkArbReady();
 
 		// set everything up
         const { jupiter, tokenA, tokenB, wallet } = await setup();
 
 		// Set pubkey display
-		const walpubkeyfull = wallet.publicKey.toString();
-		console.log(`Wallet Enabled: ${walpubkeyfull}`);
-		cache.walletpubkeyfull = walpubkeyfull;
-		cache.walletpubkey = walpubkeyfull.slice(0,5) + '...' + walpubkeyfull.slice(walpubkeyfull.length-3);
+    const walpubkeyfull = wallet.publicKey.toString();
+    // Avoid printing full public key in console to reduce fingerprinting
+    console.log(`Wallet Enabled: ${walpubkeyfull.slice(0,5)}...${walpubkeyfull.slice(walpubkeyfull.length-3)}`);
+    cache.walletpubkeyfull = walpubkeyfull;
+    cache.walletpubkey = walpubkeyfull.slice(0,5) + '...' + walpubkeyfull.slice(walpubkeyfull.length-3);
 		//console.log(cache.walletpubkey);
 
 		if (cache.config.tradingStrategy === "pingpong") {

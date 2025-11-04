@@ -8,7 +8,7 @@
 	},
 	"bin": "./src/index.js",
 	"engines": {
-		"node": ">=16"
+		"node": ">=18"
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
@@ -47,6 +47,7 @@
 		"ora-classic": "^5.4.2",
 		"promise-retry": "^2.0.1",
 		"react": "^17.0.2",
+		"rpc-websockets": "7.11.0",
 		"strip-ansi": "^7.0.1"
 	},
 	"ava": {
@@ -83,6 +84,7 @@
 		"typescript": "^4.6.4"
 	},
 	"resolutions": {
-		"@solana/buffer-layout": "4.0.0"
+		"@solana/buffer-layout": "4.0.0",
+		"rpc-websockets": "7.11.0"
 	}
 }

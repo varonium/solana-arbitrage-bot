@@ -13,6 +13,11 @@
 
 This bot is an open-source CLI tool that allows you to automate your crypto trading strategies on the Solana blockchain. The bot is currently written in JS and uses the Jupiter V4 SDK to find routes and execute trades.
 
+## Language · Bahasa
+
+- English content remains below as primary documentation.
+- Untuk versi ringkas Bahasa Indonesia, lihat bagian "Bahasa Indonesia" di akhir dokumen.
+
 ## nav
 
 ### [features](#features) · [CLI UI](#cli-ui) · ⚡️[install](#install) · [quickstart](#quickstart) · [hotkeys](#hotkeys) · [contributing](#contributing) · [license](#license) · [risk](#risk-disclaimer)
@@ -70,9 +75,15 @@ All trades are stored in trades history and will be shown in the table. Table is
 
 > Please don't use `npm`, use `yarn` instead.
 
+> Requires Node.js 18 LTS (recommended). Use a version manager like `nvm` to install and switch versions.
+
 ```bash
 $ git clone https://github.com/arbprotocol/solana-jupiter-bot && cd solana-jupiter-bot
 $ yarn
+
+# If you use nvm, ensure Node 18 LTS is active
+$ nvm install 18
+$ nvm use 18
 ```
 
 Set your wallet private key in the `.env` file
@@ -87,6 +98,14 @@ Set the default RPC
 ```js
 DEFAULT_RPC=https://my-super-lazy-rpc.gov
 ALT_RPC_LIST=https://change-this-url-in-env.gov,https://change-alt-urls-in-env.com
+
+Optional: require ARB token gating
+
+```js
+REQUIRE_ARB=false
+```
+
+When `REQUIRE_ARB=true`, the bot checks your wallet holds at least 10K ARB before running. Set `false` to disable this check.
 ```
 
 · [back to top](#nav) ·
@@ -110,6 +129,83 @@ ALT_RPC_LIST=https://change-this-url-in-env.gov,https://change-alt-urls-in-env.c
     $ yarn wizard
       Start Config Wizard only
 ```
+
+## Security tips
+
+- Store your private key only in `.env` and keep permissions tight: `chmod 600 .env`.
+- Prefer a dedicated, low-balance wallet for trading.
+- Use trusted RPC endpoints; avoid unknown third-party URLs.
+- Keep `DEBUG=false` in production to reduce local artifact logging.
+- The bot masks wallet public key in logs to reduce fingerprinting; UI shows a shortened form.
+
+· [back to top](#nav) ·
+
+# Bahasa Indonesia
+
+**Peringatan Risiko**
+- Bot dapat menyebabkan kerugian dana; gunakan dengan risiko Anda sendiri.
+- Mulai dengan jumlah kecil dan selalu lindungi private key.
+
+**Ikhtisar**
+- Bot CLI open-source untuk mengotomasi strategi trading di blockchain Solana.
+- Ditulis dengan JavaScript dan menggunakan Jupiter SDK V4 untuk mencari rute dan mengeksekusi swap.
+
+**Instalasi**
+- Pastikan `Node.js 18 LTS` aktif (disarankan menggunakan `nvm`).
+- Perintah dasar:
+  - `git clone https://github.com/arbprotocol/solana-jupiter-bot && cd solana-jupiter-bot`
+  - `yarn`
+  - Jika memakai `nvm`: `nvm install 18` lalu `nvm use 18`
+
+**Konfigurasi `.env`**
+- Set private key wallet dalam format base58:
+  - `SOLANA_WALLET_PRIVATE_KEY=<PRIVATE_KEY_BASE58>`
+- Set RPC utama dan alternatif yang tepercaya:
+  - `DEFAULT_RPC=https://rpc-anda`
+  - `ALT_RPC_LIST=https://rpc-alt-1,https://rpc-alt-2`
+- Opsi gating ARB (default nonaktif):
+  - `REQUIRE_ARB=false`
+  - Jika `true`, bot akan memastikan wallet memiliki minimal `10,000 ARB` sebelum berjalan.
+- Disarankan `DEBUG=false` untuk produksi. Jika `DEBUG==='true'`, bot menyimpan artefak lokal ke folder `./temp` (tidak pernah menyimpan private key).
+
+**Mulai Cepat**
+- `yarn start` membuka Config Wizard dan memulai bot.
+- `yarn trade` menjalankan bot menggunakan konfigurasi terbaru.
+- `yarn wizard` hanya membuka Config Wizard.
+
+**Tips Keamanan**
+- Simpan private key hanya di `.env` dan set izin file ketat: `chmod 600 .env`.
+- Gunakan wallet khusus dengan saldo rendah untuk mengurangi risiko.
+- Pakai RPC tepercaya; hindari URL pihak ketiga yang tidak jelas.
+- Jika private key pernah terekspos, segera lakukan rotasi wallet dan pindahkan dana.
+
+**Hotkeys (Saat Bot Berjalan)**
+- `[H]` tampil/sembunyikan bantuan.
+- `[CTRL]+[C]` hentikan bot.
+- `[I]` mode incognito untuk menyembunyikan alamat RPC.
+- `[E]` paksa eksekusi dengan kondisi saat ini dan profit terdeteksi (berisiko rugi, melewati aturan).
+- `[R]` paksa eksekusi lalu hentikan bot (berisiko rugi, melewati aturan).
+- `[L]` tampil/sembunyikan grafik latency (`computeRoutes()` Jupiter).
+- `[P]` tampil/sembunyikan grafik profit.
+- `[T]` tampil/sembunyikan tabel riwayat (terbatas saat ini).
+- `[S]` aktif/nonaktif mode simulasi (tanpa trading nyata).
+
+**Manajemen Saldo & Error**
+- Bot mengecek saldo saat mulai dan selama berjalan untuk mencegah transaksi gagal karena saldo tidak cukup.
+- Terdapat fail-safe: proses akan dihentikan jika jumlah error swap melebihi ambang (default 100) agar tidak terjadi loop gagal terus-menerus.
+
+**Manajemen Slippage**
+- BPS slippage sederhana tersedia; pastikan target profit di atas nilai slippage agar tetap untung.
+- Opsi slippage adaptif (`adaptiveSlippage: 1` di `config.json`) tersedia untuk pengguna mahir — gunakan dengan risiko Anda sendiri.
+
+**Kecepatan Lookup**
+- Anda dapat menonaktifkan AMM yang tidak relevan atau lambat untuk mempercepat pencarian rute.
+- Lakukan dengan hati-hati; menonaktifkan terlalu banyak AMM dapat menurunkan likuiditas dan menaikkan risiko.
+
+**Dukungan Komunitas**
+- Butuh bantuan? Bergabung ke Discord ARB: `https://discord.gg/Z8JJCuq4`
+
+· [kembali ke atas](#nav) ·
 
 ### some tips 👀
 

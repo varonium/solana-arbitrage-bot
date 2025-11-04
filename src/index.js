@@ -15,7 +15,7 @@ checkWallet();
 
 const isArbReady = async () => {
     try {
-        // Display the message
+        // Optionally enforce ARB gating
         await checkArbReady();
         return true; // If checkArbReady completes without errors, return true
     } catch (error) {

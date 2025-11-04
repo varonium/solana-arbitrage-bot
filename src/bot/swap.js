@@ -19,7 +19,7 @@ const swap = async (jupiter, route) => {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
 
-		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
+		if (process.env.DEBUG === 'true') storeItInTempAsJSON("routeInfoBeforeSwap", route);
 
 		  // pull the trade priority
 		  const priority = typeof cache.config.priority === "number" ? cache.config.priority : 100; //100 BPS default if not set
@@ -31,7 +31,7 @@ const swap = async (jupiter, route) => {
 		});
 		const result = await execute();
 
-		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
+		if (process.env.DEBUG === 'true') storeItInTempAsJSON("result", result);
 
 		// Reset counter on success
 		cache.tradeCounter.failedbalancecheck = 0;
@@ -81,7 +81,7 @@ const failedSwapHandler = async(tradeEntry, inputToken, tradeAmount) => {
 exports.failedSwapHandler = failedSwapHandler;
 
 const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
-	if (process.env.DEBUG) storeItInTempAsJSON(`txResultFromSDK_${tx?.txid}`, tx);
+    if (process.env.DEBUG === 'true') storeItInTempAsJSON(`txResultFromSDK_${tx?.txid}`, tx);
 
 		// update counter
 		cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].success++;
