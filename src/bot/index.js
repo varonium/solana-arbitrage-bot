@@ -272,21 +272,37 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// check current routes
 		const performanceOfRouteCompStart = performance.now();
-		const routes = await jupiter.computeRoutes({
-			inputMint: new PublicKey(inputToken.address),
-			outputMint: new PublicKey(outputToken.address),
-			amount: amountInJSBI,
-			slippageBps: slippage,
-			feeBps: 0,
-			forceFetch: true,
-		    onlyDirectRoutes: false,
-            filterTopNResult: 2,
-			enforceSingleTx: false,
-			swapMode: 'ExactIn',
-		});
+		let routes;
+		try {
+			routes = await jupiter.computeRoutes({
+				inputMint: new PublicKey(inputToken.address),
+				outputMint: new PublicKey(outputToken.address),
+				amount: amountInJSBI,
+				slippageBps: slippage,
+				feeBps: 0,
+				forceFetch: true,
+		    	onlyDirectRoutes: false,
+            	filterTopNResult: 2,
+				enforceSingleTx: false,
+				swapMode: 'ExactIn',
+			});
+		} catch (err) {
+			// Tangani error dari Jupiter SDK tanpa mematikan proses
+			cache.queue[i] = 1;
+			if (err?.message?.includes("No routes found for the input and output mints")) {
+				console.log("No routes found for the input/output mints. Melewati iterasi ini. Pertimbangkan untuk mengganti token atau RPC.");
+			} else {
+				console.log("computeRoutes error:", err);
+			}
+			return; // Skip iterasi saat tidak ada route
+		}
 
-		//console.log('Routes Lookup Run for '+ inputToken.address);
-		checkRoutesResponse(routes);
+		// Jika tidak ada routesInfos, lewati iterasi dengan aman
+		if (!routes?.routesInfos || routes.routesInfos.length === 0) {
+			cache.queue[i] = 1;
+			console.log("Jupiter mengembalikan 0 route. Melewati iterasi.");
+			return;
+		}
 
 		// count available routes
 		cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =
